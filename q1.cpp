@@ -14,18 +14,26 @@ class dlist{
 		head=NULL;
 		tail=NULL;
 	}
+	int countItems();
 	void insert(int data);
 	void insertpos(int pos, int data);
 	void Delete();
 	void deletepos(int pos);
-	int countItems();
 	void display();
 };
-
+int dlist::countItems(){
+	node *cur=new node;
+	cur=head;
+	int i=0;
+	while(cur!=NULL){
+		cur=cur->next;
+		++i;	}
+	return i;
+}
 void dlist::insert(int data){
 	node *temp= new node;
 	temp->data=data;
-	temp->next= NULL;
+	temp->next=NULL;
 	temp->prev=NULL;
 	if(head == NULL){
 		head=temp;
@@ -38,32 +46,39 @@ void dlist::insert(int data){
 }
 void dlist::insertpos(int pos,int data){
 	node *cur=new node;
-	node *temp=new node;
+	node *temp=new node; 
 	temp->data=data;
 	temp->prev=NULL;
 	temp->next=NULL;
 	int i;
 	cur=head;
-	for(i=1;i<pos;i++){
-		if(cur == NULL){
-			cout<<"Linked List does not have enough elements\t";
-			i=pos+5;
-		}else{
-			cur=cur->next;		
-		}
-	}
-	if(i==pos && i==1){
+	if(pos==1){
+		head->prev=temp;
+		temp->next=head;
 		head=temp;
-		temp->next=NULL;
-		tail=temp;
-	}else if(i==pos && i!=1){
-		cur->prev->next=temp;
-		temp->prev=cur->prev;
-		temp->next=cur;
-		cur->next=temp;
+	}else{
+		for(i=1;i<pos;i++){ 
+			if(cur == NULL){
+				cout<<"Linked List does not have enough elements\n";
+				i=pos+5;
+			}else{
+				cur=cur->next;		
+			}
+		}
+		if(i==pos && i==1){
+			head=temp;
+			temp->next=NULL; 
+			tail=temp;
+		}else if(i==pos && i!=1){
+			(cur->prev)->next=temp;
+			temp->prev=cur->prev;
+			temp->next=cur;
+			cur->prev=temp;
+		}	
 	}
 }
-void dlist::Delete(){
+
+void dlist::Delete(){ 
 	node *cur=new node;
 	cur=tail;
 	tail=cur->prev;
@@ -73,27 +88,21 @@ void dlist::Delete(){
 }
 void dlist::deletepos(int pos){
 	node *cur=new node;
-	cur=head;
+	cur=head; 
 	int i;
-	for(i=1;i<pos;i++){
-		cur=cur->next;
+	if(pos==1){
+		head=cur->next;
+		cur=NULL;
+		delete cur;
+	}else{
+		for(i=1;i<pos;i++){
+			cur=cur->next;
+		}
+		cur->prev->next=cur->next;
+		cur->next->prev=cur->prev;
+		cur=NULL;
+		delete cur;
 	}
-	cur->prev->next=cur->next;
-	cur->next->prev=cur->prev;
-	cur->next=NULL;
-	cur->prev=NULL;
-	delete cur;
-}
-
-int dlist::countItems(){
-	node *cur=new node;
-	int i=0;
-	cur=head;
-	while(cur!=NULL){
-		cur=cur->next;
-		++i;
-	}
-	return i;
 }	
 void dlist::display(){
 	node *cur= new node;
@@ -103,27 +112,53 @@ void dlist::display(){
 		cur=cur->next;
 	}
 		cout<<"NULL\n";
-}
-
-
-
-
+} //Make menu based.
 int main(){
-	dlist list1;
-	list1.insert(32);
-	list1.insert(45);
-	list1.insert(65);
-	list1.insert(9);
-	list1.insert(23);
-	list1.display();
-	//list1.insertpos(2,89);
-	//list1.display();
-	//list1.insertpos(6,9);
-	//list1.display();
-	list1.Delete();
-	list1.display();
-	list1.deletepos(3);
-	list1.display();
-cout <<"the number of items on the list are " <<list1.countItems()<<endl;
+	dlist dl;	
+	int choice,pos,data;
+	while (1) {       
+		cout<<"1.Insert node at begining"<<endl;
+		cout<<"2.Add at particular position"<<endl;
+		cout<<"3.Delete"<<endl;
+		cout<<"4.Delete at particular position"<<endl;
+		cout<<"5.Display"<<endl;
+		cout<<"6.Count"<<endl;           
+		cout<<"Enter your choice : ";
+		cin>>choice;
+		switch ( choice ) {
+			case 1:
+			    cout<<"Enter the data: ";
+			    cin>>data;
+			    dl.insert(data);
+			    cout<<endl;
+			    break;
+			case 2:
+			    cout<<"Enter the data: ";
+			    cin>>data;
+			    cout<<"Enter the position: ";
+			    cin>>pos;
+			    dl.insertpos(pos,data); 
+			    cout<<endl;
+			    break;
+			case 3:
+			    dl.Delete() ;
+			    cout<< "last node has been deleted" << endl;
+			    break;
+			case 4:
+			    cout<<"Enter the position: ";
+			    cin>>pos;
+			    dl.deletepos(pos);
+			    cout<<"node has been deleted"<<endl;
+			    break;
+			case 5:
+			    dl.display();
+			    cout<<endl;
+			    break;
+			case 6:
+			    cout<<"the number of items in the list are "<<dl.countItems()<<endl;
+			    break;    
+			default:
+			    cout<<"Wrong choice"<<endl;
+       		 }
+   	 }
 }
-
